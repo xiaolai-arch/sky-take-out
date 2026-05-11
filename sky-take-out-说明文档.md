@@ -147,58 +147,15 @@ cd sky-server && mvn spring-boot:run
 | nginx 端口 | `/usr/local/etc/nginx/nginx.conf` | `80` → `8088`（避免 sudo） |
 | nginx 前端路径 | `/usr/local/etc/nginx/nginx.conf` | 改为绝对路径指向 `html/sky` |
 
+#### 完善登陆功能
 
-###  前后端联调
-
-##### nginx
-
-Nginx (engine x) 是一个高性能的HTTP和反向代理web服务器，同时也提供了IMAP/POP3/SMTP服务。Nginx是由伊戈尔·赛索耶夫为俄罗斯访问量第二的Rambler.ru站点（俄文：Рамблер）开发的，公开版本1.19.6发布于2020年12月15日。
-其将源代码以类BSD许可证的形式发布，因它的稳定性、丰富的功能集、简单的配置文件和低系统资源的消耗而闻名。2022年01月25日，nginx 1.21.6发布。
-Nginx是一款轻量级的Web 服务器/反向代理服务器及电子邮件（IMAP/POP3）代理服务器，在BSD-like 协议下发行。其特点是占有内存少，并发能力强，事实上nginx的并发能力在同类型的网页服务器中表现较好。
-
-nginx反向代理等好处：
-- 提高提升访问速度（缓存）
-- 进行负载均衡（就是把大量的请求按照我们指定方式均衡的分配给集群中的每台服务器）
-- 保护后端服务的安全（前端无法直接请求后端，安全）
-
-##### 反向代理配置方式：
-```nginx
-server {
-         listen 80;
-         server_name localhost;
-         
-         location /api/ {
-                  proxy_pass http://localhost:8080/admin/; # 反向代理
-         }
-         # 最终拼成一个完整的请求路径
-         # http://localhost/api/employee/login
-         # http://localhost:8080/admin/employee/login
-}
+1. 将密码进行加密存储提升安全性
+2. 使用MD5加密方式对明文密码加密
+```
+  // 对前端明文密码进行md5加密处理
+  password = DigestUtils.md5DigestAsHex(password.getBytes());
 ```
 
-##### 负载均衡配置：
-```nginx
-upstream webservers {
-         # 两台服务器配置
-         server 192.168.0.1:8080;
-         server 192.168.0.2:8080;
-}
+#### 导入接口文档
 
-server {
-         listen 80;
-         server_name localhost;
-         
-         location /api/ ，
-         {
-                  proxy_pass http://webservers/admin/; # 负载均衡
-         }
-}
-```
-
-nginx 负载均衡策略：
-- 轮询（默认）：按照权重轮询分配
-- weight：权重，权重高的服务器分配的请求更多
-- ip_hash：每个客户端的请求固定访问某一台服务器
-- least_corn：最少连接，请求数最少的服务器分配
-- fair：按请求时间分配，请求时间短的优先分配
-- url_hash：根据URL的hash值来分配
+将课程文件提供的项目接口导入YApi。
