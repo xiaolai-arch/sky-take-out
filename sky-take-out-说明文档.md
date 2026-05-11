@@ -146,3 +146,16 @@ cd sky-server && mvn spring-boot:run
 | 编译器插件 | `pom.xml` | 新增 maven-compiler-plugin 3.11.0 + Lombok 注解处理器路径 |
 | nginx 端口 | `/usr/local/etc/nginx/nginx.conf` | `80` → `8088`（避免 sudo） |
 | nginx 前端路径 | `/usr/local/etc/nginx/nginx.conf` | 改为绝对路径指向 `html/sky` |
+
+#### 完善登陆功能
+
+1. 将密码进行加密存储提升安全性
+2. 使用MD5加密方式对明文密码加密
+```
+  // 对前端明文密码进行md5加密处理
+  password = DigestUtils.md5DigestAsHex(password.getBytes());
+```
+
+#### 导入接口文档
+
+将课程文件提供的项目接口导入YApi。
