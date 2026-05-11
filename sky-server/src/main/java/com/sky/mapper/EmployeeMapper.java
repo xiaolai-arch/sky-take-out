@@ -12,6 +12,8 @@ public interface EmployeeMapper {
      * @param username
      * @return
      */
+    // sql比较简单的时候直接使用注解
+    // 如果sql比较复杂，使用xml文件，映射
     @Select("select * from employee where username = #{username}")
     Employee getByUsername(String username);
 
