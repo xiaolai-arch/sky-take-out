@@ -288,3 +288,91 @@ post请求，json数据格式
 - 管理端发出的请求，统一使用/admin做前缀
 - 用户端发出的请求，统一使用/user做前缀
 数据库设计（employee表）
+
+1. controller层
+```java
+    /**
+     * 新增员工
+     * @param employeeDTO
+     * @return
+     * */
+    @PostMapping
+    @ApiOperation(value = "新增员工")
+    public Result save(@RequestBody EmployeeDTO employeeDTO) {
+        log.info("新增员工，员工数据：{}", employeeDTO);
+        employeeService.save(employeeDTO);
+        return Result.success();
+    }
+```
+
+2. service层：讲前端传入数据保存在数据库
+```java
+    public void save(EmployeeDTO employeeDTO){
+        Employee employee = new Employee();
+
+        // 对象的属性的拷贝,从前面拷贝到后面
+        // 属性名称需要一致
+        BeanUtils.copyProperties(employeeDTO, employee);
+
+        // 设置账号状态
+        employee.setStatus(StatusConstant.ENABLE);
+
+        // 设置密码，默认密码
+        employee.setPassword(DigestUtils.md5DigestAsHex(DEFAULT_PASSWORD.getBytes()));
+
+        // 创建时间
+        employee.setCreateTime(LocalDateTime.now());
+
+        // 修改时间
+        employee.setUpdateTime(LocalDateTime.now());
+
+        // 设置创建人的ID
+        employee.setCreateUser(BaseContext.getCurrentId());
+        employee.setUpdateUser(BaseContext.getCurrentId());
+
+        //
+        employeeMapper.insert(employee);
+    }
+```
+
+3. mapper层
+```java
+    /**
+     * 插入员工数据
+     * */
+    @Insert("insert into employee (username, name, password, phone, sex, id_number, status, create_time, update_time, create_user, update_user) " +
+            "values " +
+            "(#{username}, #{name}, #{password}, #{phone}, #{sex}, #{idNumber}, #{status}, #{createTime}, #{updateTime}, #{createUser}, #{updateUser})")
+    void insert(Employee employee);
+```
+
+4. 处理重复员工账户
+```java
+    /**
+     * 处理sql异常
+     * */
+    @ExceptionHandler
+    public Result exceptionHandler(SQLIntegrityConstraintViolationException ex){
+        String message = ex.getMessage();
+        log.error("异常信息：{}", ex.getMessage());
+        if (message.contains("Duplicate entry")){
+            String[] split = message.split(" ");
+            String msg = split[2] + MessageConstant.ALREADY_EXISTS;
+            return Result.error(msg);
+        }else {
+            return Result.error(MessageConstant.UNKNOWN_ERROR);
+        }
+    }
+```
+
+5. 线程内存储ID，JWT解析出ID
+
+```
+BaseContext.setCurrentId(empId);
+```
+
+```
+// 设置创建人的ID
+employee.setCreateUser(BaseContext.getCurrentId());
+employee.setUpdateUser(BaseContext.getCurrentId());
+```
