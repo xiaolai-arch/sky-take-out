@@ -207,4 +207,65 @@ cd sky-server && mvn spring-boot:run
 - Base URL：如 http://localhost:8080
 - 公共 Header：如 token 等
 
----                                        
+---  
+
+#### Swagger介绍和使用方法
+
+介绍：使用Swagger你需要按照他的规范去定义接口相关信息，就可以生成接口文档，以及在线接口测试页面。
+官网：https://swagger.io/
+Knife4j是Java MVC框架集成Swagger生成Api文档的增强解决方案
+
+导入依赖
+```xml
+   <dependency>
+       <groupId>com.github.xiaoymin</groupId>
+       <artifactId>knife4j-spring-boot-starter</artifactId>
+       <version>${knife4j}</version>
+   </dependency>
+```
+
+##### 使用方式
+
+1. 导入Kinfe4j的maven的坐标
+2. 再配置类中加入knife4j相关配置
+3. 设置静态资源映射，否则接口文档页面无法访问
+
+```java
+    /**
+     * 通过knife4j生成接口文档
+     * @return
+     */
+    @Bean
+    public Docket docket() {
+        ApiInfo apiInfo = new ApiInfoBuilder()
+                .title("苍穹外卖项目接口文档")
+                .version("2.0")
+                .description("苍穹外卖项目接口文档")
+                .build();
+        Docket docket = new Docket(DocumentationType.SWAGGER_2)
+                .apiInfo(apiInfo)
+                .select()
+                .apis(RequestHandlerSelectors.basePackage("com.sky.controller"))
+                .paths(PathSelectors.any())
+                .build();
+        return docket;
+    }
+
+         /**
+          * 设置静态资源映射
+          * @param registry
+          */
+         protected void addResourceHandlers(ResourceHandlerRegistry registry) {
+            registry.addResourceHandler("/doc.html").addResourceLocations("classpath:/META-INF/resources/");
+            registry.addResourceHandler("/webjars/**").addResourceLocations("classpath:/META-INF/resources/webjars/");
+         }
+```
+
+访问地址：http://localhost:8080/doc.html
+
+#### 常用注解
+
+@Api：修饰整个类，描述Controller的作用
+@ApiModel：用在类上，例如entity，DTO，VO
+@ApiModelProperty：用在属性、getter、setter方法上，描述这个属性的含义，以及是否必填
+@ApiOperation：用在方法上，描述这个方法的作用
