@@ -43,4 +43,7 @@ public interface EmployeeMapper {
      * 动态sql语句，在映射文件中写
      * */
     void update(Employee employee);
+
+    @Select("select * from employee where id = #{id}")
+    Employee getById(Long id);
 }
