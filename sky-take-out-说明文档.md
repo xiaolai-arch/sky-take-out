@@ -376,3 +376,88 @@ BaseContext.setCurrentId(empId);
 employee.setCreateUser(BaseContext.getCurrentId());
 employee.setUpdateUser(BaseContext.getCurrentId());
 ```
+
+#### 二、员工分页查询
+
+1. controller层
+
+```java
+    /**
+     * 分页查询
+     * @param employeePageQueryDTO
+     * @return
+     * */
+    @GetMapping("/page")
+    @ApiOperation("员工分页查询")
+    public Result page(EmployeePageQueryDTO employeePageQueryDTO){
+        log.info("员工分页查询");
+        PageResult pageResult = employeeService.pageQuery(employeePageQueryDTO);
+        return Result.success(pageResult);
+    }
+```
+
+2. service层
+
+```java
+    /**
+     * 分页查询
+     * */
+    public PageResult pageQuery(EmployeePageQueryDTO employeePageQueryDTO){
+        // 底层基于limit关键字进行查询
+        // mybatis 提供的分页查询插件，自动进行分页功能PageHelper
+        // maven依赖
+        // 开始分页查询
+        PageHelper.startPage(employeePageQueryDTO.getPage(), employeePageQueryDTO.getPageSize());
+
+
+        Page<Employee> page = employeeMapper.pageQuery(employeePageQueryDTO);
+
+        long total = page.getTotal();
+        List<Employee> records = page.getResult();
+        PageResult pageResult = new PageResult(total, records);
+        return pageResult;
+    }
+```
+
+3. mapper层:涉及到动态语句，所以在mapping映射文件中编写文件
+```java
+    /**
+     * 分页查询
+     * @param employeePageQueryDTO
+     * @return
+     * */
+    Page<Employee> pageQuery(EmployeePageQueryDTO employeePageQueryDTO);
+```
+
+```xml
+    <select id="pageQuery" resultType="com.sky.entity.Employee">
+        select * from employee
+        <where>
+            <if test="name != null and name != ''">
+                and name like concat('%',#{name},'%')
+            </if>
+        </where>
+        order by create_time desc
+    </select>
+```
+
+4. 设计日期消息转换器
+
+在Spring MVC配置文件中扩展消息转换器
+
+```java
+    /**
+     * 扩展Spring MVC框架的消息转换器
+     * @param converters
+     * @return
+     * */
+    protected void extendMessageConverters(List<HttpMessageConverter<?>> converters) {
+        log.info("扩展消息转换器...");
+        //创建消息转换器对象
+        MappingJackson2HttpMessageConverter messageConverter = new MappingJackson2HttpMessageConverter();
+        //设置对象转换器，底层使用Jackson将Java对象转为json
+        messageConverter.setObjectMapper(new JacksonObjectMapper());
+        //将上面的消息转换器对象追加到mvc框架的转换器集合中
+        converters.add(0,messageConverter);
+    }
+```
