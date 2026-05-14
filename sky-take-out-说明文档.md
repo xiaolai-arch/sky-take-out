@@ -461,3 +461,12 @@ employee.setUpdateUser(BaseContext.getCurrentId());
         converters.add(0,messageConverter);
     }
 ```
+
+
+#### 公共字段自动填充
+
+- 自定义注解AutoFill，用于标识需要进行公共字段填充方法
+- 自定义切面类AutoFillAspect，统一拦截加入AutoFill注解的方法，通过反射为公共字段赋值
+- 在Mapper的方法上加上AutoFill
+
+技术点：枚举、注解、AOP、反射
