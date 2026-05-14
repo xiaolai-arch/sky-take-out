@@ -470,3 +470,8 @@ employee.setUpdateUser(BaseContext.getCurrentId());
 - 在Mapper的方法上加上AutoFill
 
 技术点：枚举、注解、AOP、反射
+
+
+#### 文件上传接口开发
+
+开发文件上传接口：浏览器--->后端服务--->阿里云
