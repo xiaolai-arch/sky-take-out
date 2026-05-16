@@ -31,4 +31,10 @@ public interface SetmealMapper {
      * 套餐的分页查询
      * */
     Page<SetmealVO> pageQuery(SetmealPageQueryDTO setmealPageQueryDTO);
+
+    /**
+     * 套餐的启售和停售
+     * */
+    @AutoFill(value = OperationType.UPDATE)
+    void update(Setmeal setmeal);
 }

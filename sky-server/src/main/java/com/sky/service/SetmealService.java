@@ -17,4 +17,9 @@ public interface SetmealService {
      * 套餐分页查询
      * */
     PageResult pageQuery(SetmealPageQueryDTO setmealPageQueryDTO);
+
+    /**
+     * 套餐的启售停售
+     * */
+    void startOrStop(Integer status, Long id);
 }

@@ -19,4 +19,18 @@
             </if>
         </where>
     </select>
+
+<!--    更新套餐表-->
+    <update id="update">
+        update setmeal
+        <set>
+            <if test="name != null">name = #{name},</if>
+            <if test="categoryId != null">category_id = #{categoryId},</if>
+            <if test="price != null">price = #{price},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="image != null">image = #{image},</if>
+            <if test="description != null">description = #{description},</if>
+            <if test="updateTime != null">update_time = #{updateTime}</if>
+        </set>
+    </update>
 </mapper>
