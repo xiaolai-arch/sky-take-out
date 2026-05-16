@@ -37,4 +37,16 @@ public interface SetmealMapper {
      * */
     @AutoFill(value = OperationType.UPDATE)
     void update(Setmeal setmeal);
+
+    /**
+     * 根据Id查询套餐数据
+     * */
+    @Select("select * from setmeal where id = #{id}")
+    Setmeal getById(Long id);
+
+    /**
+     * 根据id删除套餐数据
+     * */
+    @Select("delete from setmeal where id = #{id}")
+    void deleteById(Long id);
 }

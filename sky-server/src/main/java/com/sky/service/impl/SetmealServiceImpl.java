@@ -5,8 +5,10 @@ import com.github.pagehelper.PageHelper;
 import com.sky.constant.StatusConstant;
 import com.sky.dto.SetmealDTO;
 import com.sky.dto.SetmealPageQueryDTO;
+import com.sky.entity.Dish;
 import com.sky.entity.Setmeal;
 import com.sky.entity.SetmealDish;
+import com.sky.exception.DeletionNotAllowedException;
 import com.sky.mapper.SetmealDishMapper;
 import com.sky.mapper.SetmealMapper;
 import com.sky.result.PageResult;
@@ -84,5 +86,28 @@ public class SetmealServiceImpl implements SetmealService {
                 .status(status)
                 .build();
         setmealMapper.update(setmeal);
+    }
+
+    /*
+    * 批量删除套餐
+    * */
+    public void deleteBatch(List<Long> ids){
+
+        // 判断当前套餐是否在售
+        for (Long id : ids){
+            Setmeal setmeal = setmealMapper.getById(id);
+            if (setmeal.getStatus() == StatusConstant.ENABLE){
+                // 当前套餐处于启售中，不能删除
+                throw new DeletionNotAllowedException("当前套餐处于启售中，不能删除");
+            }
+        }
+        // 先删除关联菜品
+        for (Long setmealId : ids){
+            // 删除套餐表中的数据
+            setmealMapper.deleteById(setmealId);
+
+            // 删除套餐菜品关联表中数据
+            setmealDishMapper.deleteBySetmealId(setmealId);
+        }
     }
 }

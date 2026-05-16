@@ -83,6 +83,9 @@ public class DishServiceImpl implements DishService {
         return new PageResult(page.getTotal(), page.getResult());
     }
 
+    /**
+     * 删除菜品
+     * */
     @Transactional // 保证方法执行时，事务是原子的
     public void deleteBatch(List<Long> ids){
         // 判断当前菜品是否在启售中
@@ -106,7 +109,7 @@ public class DishServiceImpl implements DishService {
 //            // 删除菜品关联的口味数据
 //            dishFlavorMapper.deleteByDishId(id);
 //        }
-        // 更具菜品id集合批量删除
+        // 根据菜品id集合批量删除
         dishMapper.deleteByIds(ids);
 
         // 批量删除菜品关联的口味数据
