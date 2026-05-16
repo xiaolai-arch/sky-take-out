@@ -14,10 +14,14 @@
             <if test="name != null and name != ''">
                 and s.name like concat('%',#{name},'%')
             </if>
+            <if test="status != null">
+                and s.status = #{status}
+            </if>
             <if test="categoryId != null">
                 and s.category_id = #{categoryId}
             </if>
         </where>
+        order by s.create_time desc
     </select>
 
 <!--    更新套餐表-->

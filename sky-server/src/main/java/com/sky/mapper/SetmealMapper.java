@@ -49,4 +49,9 @@ public interface SetmealMapper {
      * */
     @Select("delete from setmeal where id = #{id}")
     void deleteById(Long id);
+
+    /**
+     * 根据ID查询套餐和菜品
+     * */
+    SetmealVO getByIdWithDish(Long id);
 }
