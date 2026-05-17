@@ -6,4 +6,12 @@ sky:
     database: sky_take_out
     username: root
     password: 116013.jm
+  # Redis基础连接配置
+spring:
+  redis:
+    host: localhost          # Redis服务器地址
+    port: 6379               # Redis服务器端口
+    password: foobared               # Redis密码(本地默认无密码)
+    database: 0              # 默认使用第0个库(共16个库: db0~db15)
+    timeout: 5000ms          # 连接超时时间
 
