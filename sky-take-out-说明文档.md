@@ -479,3 +479,19 @@ employee.setUpdateUser(BaseContext.getCurrentId());
 https://api.weixin.qq.com/sns/jscode2session?
 
 0d39cVml2yI8Hh4R9Qml2ap4US39cVmd
+
+#### Spring Cache
+
+Spring Cache 是 Spring 框架提供的缓存功能，它可以将查询结果缓存起来，下次查询相同的数据时，可以从缓存中获取结果，从而提高性能。
+
+Spring Cache提供了一层抽象，底层可以切换不同的缓存实现，例如：
+- EhCache
+- Redis
+- Caffeine
+
+常用注解：
+- @EnableCaching: 开启缓存功能, 在启动类上加
+- @Cacheable: 用于查询方法上，表示将查询结果缓存起来,如果有数据缓存，则直接从缓存中获取，不再执行方法
+- @CachePut: 用于插入方法上，表示将插入结果缓存起来
+  - CachePut(cacheNames = "userCache", key = "#user.id") spring EL表达式，获取传入的参数
+- @CacheEvict: 用于删除方法上，将一条或多条数据删除
