@@ -41,7 +41,13 @@ sky:
     admin-ttl: 7200000
     # 设置前端传递过来的令牌名称
     admin-token-name: token
-#  alioss:
+    # 登录成功返回给前端的令牌名称
+    user-secret-key: itheima
+    # 设置jwt过期时间
+    user-ttl: 7200000
+    # 设置前端传递过来的令牌名称
+    user-token-name: authentication
+  #  alioss:
 #    endpoint:
 #    access-key-id:
 #    access-key-secret:
@@ -53,3 +59,6 @@ sky:
     password: 116013.jm
     upload-dir: /data/blog/uploads
     access-base-url: http://140.143.170.29/uploads
+  wechat:
+    appid: ${sky.wechat.appid}
+    secret: ${sky.wechat.secret}

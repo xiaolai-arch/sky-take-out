@@ -475,3 +475,7 @@ employee.setUpdateUser(BaseContext.getCurrentId());
 #### 文件上传接口开发
 
 开发文件上传接口：浏览器--->后端服务--->阿里云
+
+https://api.weixin.qq.com/sns/jscode2session?
+
+0d39cVml2yI8Hh4R9Qml2ap4US39cVmd

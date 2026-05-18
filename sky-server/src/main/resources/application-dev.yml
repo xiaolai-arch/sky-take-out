@@ -6,6 +6,9 @@ sky:
     database: sky_take_out
     username: root
     password: 116013.jm
+  wechat:
+    appid: wx7d6c3e32118c9fb7
+    secret: 5027b2d980a86df4d3651eedf46a256e
   # Redis基础连接配置
 spring:
   redis:
