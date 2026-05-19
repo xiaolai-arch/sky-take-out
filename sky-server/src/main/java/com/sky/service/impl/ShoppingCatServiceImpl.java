@@ -71,4 +71,18 @@ public class ShoppingCatServiceImpl implements ShoppingCatService {
             shoppingCatMapping.insert(shoppingCart);
         }
     }
+
+    /*
+    * 获取购物车列表，接口实现
+    * */
+    public List<ShoppingCart> showShoppingCart() {
+        // 获取当前微信用户ID
+        Long userId = BaseContext.getCurrentId();
+
+        ShoppingCart shoppingCart = ShoppingCart.builder()
+                .userId(userId)
+                .build();
+        List<ShoppingCart> list = shoppingCatMapping.list(shoppingCart);
+        return list;
+    }
 }
