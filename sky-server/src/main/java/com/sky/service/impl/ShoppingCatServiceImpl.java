@@ -12,9 +12,7 @@ import com.sky.service.ShoppingCatService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
-import org.w3c.dom.stylesheets.LinkStyle;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -40,13 +38,15 @@ public class ShoppingCatServiceImpl implements ShoppingCatService {
         BeanUtils.copyProperties(shoppingCartDTO, shoppingCart);
 
         Long userId = BaseContext.getCurrentId();
+        shoppingCart.setUserId(userId);
 
         List<ShoppingCart> list = shoppingCatMapping.list(shoppingCart);
 
         // 如果存在，则数量加1
         if (list != null && list.size() > 0){
             ShoppingCart cart = list.get(0);
-            cart.setNumber(cart.getNumber() + 1); // updata shopping_cart set number = ? where id = ?
+            cart.setNumber(cart.getNumber() + 1);
+            shoppingCatMapping.update(cart);
         }else {
             // 不存在
             // 判断这次添加是菜品还是套餐

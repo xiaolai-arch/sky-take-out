@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/user/shop/cat")
+@RequestMapping("/user/shoppingCart")
 @Api(tags = "C端-购物车接口")
 @Slf4j
 public class ShoppingCatController {
