@@ -9,7 +9,7 @@ import org.apache.ibatis.annotations.Update;
 import java.util.List;
 
 @Mapper
-public interface ShoppingCatMapping {
+public interface ShoppingCatMapper {
 
     List<ShoppingCart> list(ShoppingCart shoppingCart);
 

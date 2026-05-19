@@ -7,7 +7,7 @@ import com.sky.entity.Setmeal;
 import com.sky.entity.ShoppingCart;
 import com.sky.mapper.DishMapper;
 import com.sky.mapper.SetmealMapper;
-import com.sky.mapper.ShoppingCatMapping;
+import com.sky.mapper.ShoppingCatMapper;
 import com.sky.service.ShoppingCatService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
@@ -22,7 +22,7 @@ import java.util.List;
 public class ShoppingCatServiceImpl implements ShoppingCatService {
 
     @Autowired
-    private ShoppingCatMapping shoppingCatMapping;
+    private ShoppingCatMapper shoppingCatMapper;
 
     @Autowired
     private DishMapper dishMapper;
@@ -40,13 +40,13 @@ public class ShoppingCatServiceImpl implements ShoppingCatService {
         Long userId = BaseContext.getCurrentId();
         shoppingCart.setUserId(userId);
 
-        List<ShoppingCart> list = shoppingCatMapping.list(shoppingCart);
+        List<ShoppingCart> list = shoppingCatMapper.list(shoppingCart);
 
         // 如果存在，则数量加1
         if (list != null && list.size() > 0){
             ShoppingCart cart = list.get(0);
             cart.setNumber(cart.getNumber() + 1);
-            shoppingCatMapping.update(cart);
+            shoppingCatMapper.update(cart);
         }else {
             // 不存在
             // 判断这次添加是菜品还是套餐
@@ -68,7 +68,7 @@ public class ShoppingCatServiceImpl implements ShoppingCatService {
             }
             shoppingCart.setNumber(1);
             shoppingCart.setCreateTime(LocalDateTime.now());
-            shoppingCatMapping.insert(shoppingCart);
+            shoppingCatMapper.insert(shoppingCart);
         }
     }
 
@@ -82,7 +82,7 @@ public class ShoppingCatServiceImpl implements ShoppingCatService {
         ShoppingCart shoppingCart = ShoppingCart.builder()
                 .userId(userId)
                 .build();
-        List<ShoppingCart> list = shoppingCatMapping.list(shoppingCart);
+        List<ShoppingCart> list = shoppingCatMapper.list(shoppingCart);
         return list;
     }
 
@@ -91,6 +91,6 @@ public class ShoppingCatServiceImpl implements ShoppingCatService {
     * */
     public void cleanShoppingCart() {
         Long userId = BaseContext.getCurrentId();
-        shoppingCatMapping.delete(userId);
+        shoppingCatMapper.delete(userId);
     }
 }
