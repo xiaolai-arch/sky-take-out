@@ -6,7 +6,7 @@ import com.sky.constant.MessageConstant;
 import com.sky.dto.UserLoginDTO;
 import com.sky.entity.User;
 import com.sky.exception.LoginFailedException;
-import com.sky.mapper.UserMappr;
+import com.sky.mapper.UserMapper;
 import com.sky.properties.WeChatProperties;
 import com.sky.service.UserService;
 import com.sky.utils.HttpClientUtil;
@@ -25,7 +25,7 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private WeChatProperties weChatProperties;
     @Autowired
-    private UserMappr userMappr;
+    private UserMapper userMapper;
 
     // 微信服务接口地址
     public static final String WX_LOGIN = "https://api.weixin.qq.com/sns/jscode2session";
@@ -42,7 +42,7 @@ public class UserServiceImpl implements UserService {
         }
 
         // 判断当前微信用户是否为新的用户
-        User user = userMappr.getByOpenid(openid);
+        User user = userMapper.getByOpenid(openid);
 
         // 如果是新用户，自动完成注册
         if (user == null){
@@ -50,7 +50,7 @@ public class UserServiceImpl implements UserService {
                     .openid(openid)
                     .createTime(LocalDateTime.now())
                     .build();
-            userMappr.insert(user);
+            userMapper.insert(user);
         }
 
         // 返回用户对象
