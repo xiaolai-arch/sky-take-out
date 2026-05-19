@@ -85,4 +85,12 @@ public class ShoppingCatServiceImpl implements ShoppingCatService {
         List<ShoppingCart> list = shoppingCatMapping.list(shoppingCart);
         return list;
     }
+
+    /*
+    * 清空购物车，接口实现
+    * */
+    public void cleanShoppingCart() {
+        Long userId = BaseContext.getCurrentId();
+        shoppingCatMapping.delete(userId);
+    }
 }
