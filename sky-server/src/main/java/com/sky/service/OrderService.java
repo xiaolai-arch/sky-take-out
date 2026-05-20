@@ -48,4 +48,9 @@ public interface OrderService {
     void cancel(Long id);
 
     void repetition(Long id);
+
+    /*
+    * 订单分页查询
+    * */
+    PageResult pageQuery(OrdersPageQueryDTO ordersPageQueryDTO);
 }

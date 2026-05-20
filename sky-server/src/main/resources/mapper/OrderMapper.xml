@@ -64,4 +64,27 @@
             </if>
         </where>
     </select>
+
+<!--    查询全部用户的订单-->
+    <select id="pageQuery1" resultType="com.sky.vo.OrderVO">
+        select * from orders
+        <where>
+            <if test="number != null and number != ''">
+                and number like concat('%',#{number},'%')
+            </if>
+            <if test="phone != null and phone != ''">
+                and phone like concat('%',#{phone},'%')
+            </if>
+            <if test="status != null">
+                and status = #{status}
+            </if>
+            <if test="beginTime != null">
+                 and order_time &lt;= #{endTime}
+            </if>
+            <if test="beginTime != null">
+                and order_time &gt;= #{beginTime}
+            </if>
+        </where>
+        order by order_time desc
+    </select>
 </mapper>

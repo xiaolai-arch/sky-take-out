@@ -305,4 +305,23 @@ public class OrderServiceImpl implements OrderService {
             shoppingCatMapper.insert(shoppingCart);
         }
     }
+
+    /*
+    * 订单分页查询
+    * 查询全部都订单
+    * */
+    public PageResult pageQuery(OrdersPageQueryDTO ordersPageQueryDTO) {
+        // 分页插件：使用PageHelper
+        PageHelper.startPage(ordersPageQueryDTO.getPage(), ordersPageQueryDTO.getPageSize());
+
+        // 获取分页结果
+        Page<OrderVO> page = orderMapper.pageQuery1(ordersPageQueryDTO);
+        // 再根据订单Id查询订单详情
+        for (OrderVO orderVO : page) {
+            Long orderId = orderVO.getId();
+            List<OrderDetail> orderDetailList = orderDetailMapper.getByOrderId(orderId);
+            orderVO.setOrderDetailList(orderDetailList);
+        }
+        return new PageResult(page.getTotal(), page.getResult());
+    }
 }
