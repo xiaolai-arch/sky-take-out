@@ -9,6 +9,8 @@ sky:
   wechat:
     appid: wx7d6c3e32118c9fb7
     secret: 5027b2d980a86df4d3651eedf46a256e
+  shop:
+    address: 北京市海淀区上地十街10号
   # Redis基础连接配置
 spring:
   redis:

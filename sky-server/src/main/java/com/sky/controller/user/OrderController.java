@@ -29,7 +29,7 @@ public class OrderController {
     * */
     @PostMapping("/submit")
     @ApiOperation("用户下单")
-    public Result<OrderSubmitVO> submit(@RequestBody OrdersSubmitDTO ordersSubmitDTO) {
+    public Result<OrderSubmitVO> submit(@RequestBody OrdersSubmitDTO ordersSubmitDTO) throws Exception {
         log.info("用户下单：{}", ordersSubmitDTO);
         OrderSubmitVO orderSubmitVO = orderService.submitOrder(ordersSubmitDTO);
         return Result.success(orderSubmitVO);
@@ -77,9 +77,9 @@ public class OrderController {
     * */
     @PutMapping("/cancel/{id}")
     @ApiOperation("取消订单")
-    public Result cancel(@PathVariable Long id) {
+    public Result cancel(@PathVariable Long id) throws Exception {
         log.info("取消订单：{}", id);
-        orderService.cancel(id);
+        orderService.userCancelById(id);
         return Result.success();
     }
 
