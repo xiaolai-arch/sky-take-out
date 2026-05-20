@@ -1,8 +1,11 @@
 package com.sky.service.impl;
 
 import com.alibaba.fastjson.JSONObject;
+import com.github.pagehelper.Page;
+import com.github.pagehelper.PageHelper;
 import com.sky.constant.MessageConstant;
 import com.sky.context.BaseContext;
+import com.sky.dto.OrdersPageQueryDTO;
 import com.sky.dto.OrdersPaymentDTO;
 import com.sky.dto.OrdersSubmitDTO;
 import com.sky.entity.*;
@@ -11,12 +14,15 @@ import com.sky.exception.OrderBusinessException;
 import com.sky.exception.ShoppingCartBusinessException;
 import com.sky.mapper.*;
 import com.sky.properties.WeChatProperties;
+import com.sky.result.PageResult;
 import com.sky.service.OrderService;
 import com.sky.utils.WeChatPayUtil;
 import com.sky.vo.OrderPaymentVO;
 import com.sky.vo.OrderSubmitVO;
+import com.sky.vo.OrderVO;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -48,6 +54,11 @@ public class OrderServiceImpl implements OrderService {
 
     @Autowired
     private UserMapper userMapper;
+
+    @Autowired
+    private DishMapper dishMapper;
+    @Autowired
+    private SetmealMapper setmealMapper;
 
 
     /*
@@ -90,6 +101,8 @@ public class OrderServiceImpl implements OrderService {
 
         orders.setPhone(addressBook.getPhone()); //通过地址薄获取手机号
         orders.setConsignee(addressBook.getConsignee()); // 通过地址薄获取收货人
+        orders.setAddress(addressBook.getProvinceName() + addressBook.getCityName()
+                + addressBook.getDistrictName() + addressBook.getDetail()); // 拼装完整地址
 
         orders.setUserId(userId);
 
@@ -169,5 +182,122 @@ public class OrderServiceImpl implements OrderService {
                 .build();
 
         orderMapper.update(orders);
+    }
+
+    // ... existing code ...
+
+    /**
+     * 查询用户历史订单（分页）
+     * <p>
+     * 该方法会查询当前登录用户的订单列表，支持按状态筛选。
+     * 对于每个订单，还会关联查询其订单详情（菜品信息）。
+     * </p>
+     *
+     * @param ordersPageQueryDTO 分页查询参数，包含：
+     *                           - page: 页码
+     *                           - pageSize: 每页记录数
+     *                           - status: 订单状态（可选，用于筛选）
+     * @return PageResult 分页结果，包含：
+     *                    - total: 总记录数
+     *                    - records: OrderVO列表，每个OrderVO包含订单基本信息和订单详情列表
+     */
+    @Override
+    public PageResult historyOrders(OrdersPageQueryDTO ordersPageQueryDTO) {
+
+        // 使用PageHelper插件进行分页，自动拦截SQL并添加LIMIT子句
+        PageHelper.startPage(ordersPageQueryDTO.getPage(), ordersPageQueryDTO.getPageSize(), true);
+
+        // 构建查询条件：设置当前用户ID和订单状态
+//        OrdersPageQueryDTO dto = new OrdersPageQueryDTO();
+//        dto.setUserId(BaseContext.getCurrentId());
+//        dto.setStatus(ordersPageQueryDTO.getStatus());
+        ordersPageQueryDTO.setUserId(BaseContext.getCurrentId());
+
+        // 执行分页查询，获取订单列表
+        Page<Orders> page = orderMapper.pageQuery(ordersPageQueryDTO);
+
+        // 将Orders实体转换为OrderVO，并关联查询每个订单的详情
+        List<OrderVO> list = new ArrayList<>();
+        if (page != null && page.getTotal() > 0){
+            for (Orders order : page){
+                Long orderId = order.getId();
+                List<OrderDetail> orderDetailList = orderDetailMapper.getByOrderId(orderId);
+
+                OrderVO orderVO = new OrderVO();
+                BeanUtils.copyProperties(order, orderVO);
+                orderVO.setOrderDetailList(orderDetailList);
+
+                list.add(orderVO);
+            }
+        }
+        return new PageResult(page.getTotal(), list);
+    }
+
+
+    /*
+    * 根据订单id查询订单详情
+    * */
+    public OrderVO orderDetail(Long id) {
+
+        // 先查询Orders中对印的order
+        Orders orders = orderMapper.getById(id);
+
+        // 在根据order中order_id查询OrderDetail
+        Long orderId = orders.getId();
+        List<OrderDetail> orderDetailList = orderDetailMapper.getByOrderId(orderId);
+
+        OrderVO orderVO = new OrderVO();
+        BeanUtils.copyProperties(orders, orderVO);
+        orderVO.setOrderDetailList(orderDetailList);
+
+        return orderVO;
+    }
+
+    /*
+    * 根据订单Id取消订单
+    * @param id
+    * */
+    public void cancel(Long id) {
+        // 本质上是一个update操作
+        // 需要将订单状态修改成6，取消订单
+        Orders orders = Orders.builder()
+                .id(id)
+                .status(Orders.CANCELLED)
+                .cancelReason("用户取消")
+                .cancelTime(LocalDateTime.now())
+                .build();
+        orderMapper.update(orders);
+    }
+
+    /*
+    * 再来一单
+    * 就是将原来订单内到数据，全部再存放到购物车中
+    * */
+    public void repetition(Long id) {
+        // 再来一单，先获取原来订单全部内容
+        Orders order = orderMapper.getById(id);
+
+        // 将获取到的内容，再添加到购物车中
+        List<OrderDetail> orderDetailList = orderDetailMapper.getByOrderId(id);
+        for (OrderDetail orderDetail : orderDetailList) {
+            // 获取菜品Id或套餐Id
+            Long dishId = orderDetail.getDishId();
+            Long setmealId = orderDetail.getSetmealId();
+
+            ShoppingCart shoppingCart = new ShoppingCart();
+            shoppingCart.setUserId(BaseContext.getCurrentId());
+            if (dishId != null){
+                Dish dish = dishMapper.getById(dishId);
+                shoppingCart.setName(dish.getName());
+                shoppingCart.setImage(dish.getImage());
+                shoppingCart.setAmount(dish.getPrice());
+            }
+
+
+            // 再根据菜品Id或套餐Id查询对应的商品，再添加到购物车中
+        }
+
+
+
     }
 }
