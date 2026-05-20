@@ -279,25 +279,30 @@ public class OrderServiceImpl implements OrderService {
 
         // 将获取到的内容，再添加到购物车中
         List<OrderDetail> orderDetailList = orderDetailMapper.getByOrderId(id);
+
+        ShoppingCart shoppingCart = new ShoppingCart();
+
         for (OrderDetail orderDetail : orderDetailList) {
             // 获取菜品Id或套餐Id
             Long dishId = orderDetail.getDishId();
             Long setmealId = orderDetail.getSetmealId();
 
-            ShoppingCart shoppingCart = new ShoppingCart();
             shoppingCart.setUserId(BaseContext.getCurrentId());
+            // 再根据菜品Id或套餐Id查询对应的商品，再添加到购物车中
             if (dishId != null){
                 Dish dish = dishMapper.getById(dishId);
                 shoppingCart.setName(dish.getName());
                 shoppingCart.setImage(dish.getImage());
                 shoppingCart.setAmount(dish.getPrice());
+            } else if (setmealId != null) {
+                Setmeal setmeal = setmealMapper.getById(setmealId);
+                shoppingCart.setName(setmeal.getName());
+                shoppingCart.setImage(setmeal.getImage());
+                shoppingCart.setAmount(setmeal.getPrice());
             }
-
-
-            // 再根据菜品Id或套餐Id查询对应的商品，再添加到购物车中
+            shoppingCart.setNumber(1);
+            shoppingCart.setCreateTime(LocalDateTime.now());
+            shoppingCatMapper.insert(shoppingCart);
         }
-
-
-
     }
 }
