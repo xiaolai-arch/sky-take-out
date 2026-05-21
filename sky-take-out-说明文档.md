@@ -495,3 +495,18 @@ Spring Cache提供了一层抽象，底层可以切换不同的缓存实现，�
 - @CachePut: 用于插入方法上，表示将插入结果缓存起来
   - CachePut(cacheNames = "userCache", key = "#user.id") spring EL表达式，获取传入的参数
 - @CacheEvict: 用于删除方法上，将一条或多条数据删除
+
+
+#### Spring Task
+
+##### spring task_cron表达式
+cron表达式就是一个字符串，通过cron表达式可以定义任务触发的时间
+
+构成规则：分为6/7个域，由空格隔开，每个域代表一个含义
+
+每个域的含义分别为：秒、分、时、日、月、周、年（可选）
+
+2022年10月12日上午9点整cron表达式：0 0 9 12 10 ? 2022
+2022年10月12日09:00:00cron表达式：0 0 9 12 10 ? 2022
+
+cr0n表达式在线生成器：https://cron.qqe2.com/
