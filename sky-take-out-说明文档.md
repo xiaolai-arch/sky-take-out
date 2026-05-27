@@ -499,6 +499,8 @@ Spring Cache提供了一层抽象，底层可以切换不同的缓存实现，�
 
 #### Spring Task
 
+集成在spring-contest这个jar包里面
+
 ##### spring task_cron表达式
 cron表达式就是一个字符串，通过cron表达式可以定义任务触发的时间
 
@@ -510,3 +512,9 @@ cron表达式就是一个字符串，通过cron表达式可以定义任务触发
 2022年10月12日09:00:00cron表达式：0 0 9 12 10 ? 2022
 
 cr0n表达式在线生成器：https://cron.qqe2.com/
+
+##### 使用步骤
+
+1. 导入maven坐标
+2. 启动类添加注解@EnableScheduling
+3. 自定义定时任务类

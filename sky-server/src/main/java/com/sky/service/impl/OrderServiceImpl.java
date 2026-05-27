@@ -118,7 +118,8 @@ public class OrderServiceImpl implements OrderService {
         Long distance = MaxDistance(address);
         if (distance > 5000){
             log.info("当前地址不支持配送");
-            throw new OrderBusinessException("当前地址不支持配送");
+            // 该项目不支持支付，直接跳过地址异常错误
+            // throw new OrderBusinessException("当前地址不支持配送");
         }
 
         orders.setUserId(userId);

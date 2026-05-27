@@ -12,7 +12,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.cache.annotation.Cacheable;
 
 import java.util.List;
 
@@ -33,7 +32,7 @@ public class SetmealController {
      * */
     @PostMapping
     @ApiOperation("新增套餐")
-    @Cacheable(value = "setmealCache", key = "#setmealDTO.categoryId")
+    @CacheEvict(cacheNames = "setmealCache", allEntries = true)
     public Result save(@RequestBody SetmealDTO setmealDTO){
         log.info("新增套餐：{}", setmealDTO);
         setmealService.saveWithDish(setmealDTO);
