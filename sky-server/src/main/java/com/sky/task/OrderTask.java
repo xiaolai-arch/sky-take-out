@@ -18,9 +18,28 @@ public class OrderTask {
     private OrderMapper orderMapper;
 
     /*
-    * 处理超时订单
+    * 该方法在发开端使用，为了将待支付的状态改成已支付状态
     * */
     @Scheduled(cron = "1 * * * * *")
+    public void processOrder(){
+        log.info("待支付改成已经支付：{}", LocalDateTime.now());
+
+        // 当前时间
+        LocalDateTime time = LocalDateTime.now();
+
+        List<Orders> ordersList = orderMapper.getByStatusAndOrderTime(Orders.PENDING_PAYMENT, time);
+        if (ordersList != null && !ordersList.isEmpty()){
+            for (Orders orders : ordersList){
+                orders.setStatus(Orders.TO_BE_CONFIRMED);
+                orderMapper.update(orders);
+            }
+        }
+    }
+
+    /*
+    * 处理超时订单
+    * */
+    @Scheduled(cron = "0 */10 * * * *")
     public void processTimeOutOrder(){
         log.info("每分钟处理一下订单,{}", LocalDateTime.now());
 

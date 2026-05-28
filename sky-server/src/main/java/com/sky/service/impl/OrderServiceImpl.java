@@ -538,8 +538,8 @@ public class OrderServiceImpl implements OrderService {
         // 根据id查询订单
         Orders orders = orderMapper.getById(id);
 
-        // 校验订单是否存在
-        if(orders == null || orders.getStatus() != Orders.CONFIRMED){
+        // 校验订单是否存在，只有派送中的订单才能完成
+        if(orders == null || orders.getStatus() != Orders.DELIVERY_IN_PROGRESS){
             throw new OrderBusinessException(MessageConstant.ORDER_NOT_FOUND);
         }
 
