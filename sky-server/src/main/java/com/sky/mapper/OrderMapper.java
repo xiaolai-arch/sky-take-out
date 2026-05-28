@@ -8,7 +8,9 @@ import com.sky.enumeration.OperationType;
 import com.sky.vo.OrderVO;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
+import org.springframework.core.annotation.Order;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Mapper
@@ -31,7 +33,6 @@ public interface OrderMapper {
      * 修改订单信息
      * @param orders
      */
-    @AutoFill(value = OperationType.UPDATE)
     void update(Orders orders);
 
     /*
@@ -53,4 +54,12 @@ public interface OrderMapper {
 
     @Select("select * from orders")
     List<Orders> list();
+
+    /*
+    * 根据订单状态和下单时间来查询订单
+    * @param
+    * @return
+    * */
+    @Select("select * from orders where status = #{status} and order_time < #{orderTime}")
+    List<Orders> getByStatusAndOrderTime(Integer status, LocalDateTime orderTime);
 }
