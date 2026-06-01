@@ -2,6 +2,7 @@ package com.sky.task;
 
 import com.sky.entity.Orders;
 import com.sky.mapper.OrderMapper;
+import com.sky.websocket.WebSocketServer;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -17,11 +18,14 @@ public class OrderTask {
     @Autowired
     private OrderMapper orderMapper;
 
+    @Autowired
+    private WebSocketServer webSocketServer;
+
     /*
     * 该方法在发开端使用，为了将待支付的状态改成已支付状态
     * */
-    @Scheduled(cron = "1 * * * * *")
-    public void processOrder(){
+    @Scheduled(cron = "*/5 * * * * *")
+    public void processOrderPaySuccess(){
         log.info("待支付改成已经支付：{}", LocalDateTime.now());
 
         // 当前时间

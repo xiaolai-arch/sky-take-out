@@ -511,10 +511,33 @@ cron表达式就是一个字符串，通过cron表达式可以定义任务触发
 2022年10月12日上午9点整cron表达式：0 0 9 12 10 ? 2022
 2022年10月12日09:00:00cron表达式：0 0 9 12 10 ? 2022
 
-cr0n表达式在线生成器：https://cron.qqe2.com/
+cron表达式在线生成器：https://cron.qqe2.com/
 
 ##### 使用步骤
 
 1. 导入maven坐标
 2. 启动类添加注解@EnableScheduling
 3. 自定义定时任务类
+
+#### WebSocket
+
+websocket是一种基于TCP的一种网络协议。它实现了浏览器与服务器全双工通信
+
+浏览器与服务器之间进行全双工通信，即浏览器可以主动向服务器发送消息，也可以接受服务器推送的消息。
+
+HTTP协议与WebSocket协议对比
+- HTTP协议：是短链接
+- WebSocket协议：是长链接
+- HTTP通信是单向的，基于请求响应模式
+- WebSocket通信是双向的，基于事件驱动模式
+- 都是基于TCP
+
+WebSocket应用场景
+- 网页聊天
+- 视频弹幕
+- 体育实况分析
+- 股票基金报价实时更新
+
+使用websocket步骤
+1. 创建websocket服务：实现WebSocketServer类
+2. 配置config：实现WebSocketConfig类

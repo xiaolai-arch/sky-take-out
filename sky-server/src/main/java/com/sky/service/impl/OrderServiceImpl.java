@@ -1,5 +1,6 @@
 package com.sky.service.impl;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
@@ -20,6 +21,7 @@ import com.sky.vo.OrderPaymentVO;
 import com.sky.vo.OrderStatisticsVO;
 import com.sky.vo.OrderSubmitVO;
 import com.sky.vo.OrderVO;
+import com.sky.websocket.WebSocketServer;
 import io.swagger.models.auth.In;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
@@ -34,7 +36,9 @@ import java.beans.Transient;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 import static org.springframework.util.CollectionUtils.isEmpty;
 
@@ -67,6 +71,8 @@ public class OrderServiceImpl implements OrderService {
 
     @Value("${sky.shop.address}")
     private String shopAddress;
+    @Autowired
+    private WebSocketServer webSocketServer;
 
 
     /*
@@ -148,6 +154,17 @@ public class OrderServiceImpl implements OrderService {
                 .orderTime(orders.getOrderTime())
                 .build();
 
+        /*
+        * 该处开发订单提醒
+        * */
+        log.info("订单提交成功，开始发送订单提醒");
+        Map map = new HashMap<>();
+        map.put("type", 1); // 1表示订单提醒
+        map.put("orderId", orders.getId());
+        map.put("content", "订单号" + orders.getNumber());
+
+        String json = JSON.toJSONString(map);
+        webSocketServer.sendToAllClient(json);
 
         return orderSubmitVO;
     }
