@@ -546,3 +546,13 @@ WebSocket应用场景
 
 ApacheECharts前端技术：一个开源的图表库，基于JavaScript开发，兼容所有浏览器，支持PC、移动设备
 官网地址：https://echarts.apache.org/v4/zh/index.html
+
+#### ApachePOI介绍
+
+Apache POI是用Java编写的免费开源的跨平台的 Java API，Apache POI提供API给Java程序对Microsoft Office格式档案读和写的功能。
+
+实现步骤：
+- 设计Excel模版文件
+- 查询近30天的运营数据
+- 将查询到的数据写入模版文件
+- 通过输出流将Excel文件下载到客户端浏览器
