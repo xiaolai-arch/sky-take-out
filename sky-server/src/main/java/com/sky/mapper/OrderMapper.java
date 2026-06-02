@@ -2,6 +2,7 @@ package com.sky.mapper;
 
 import com.github.pagehelper.Page;
 import com.sky.annotation.AutoFill;
+import com.sky.dto.GoodsSalesDTO;
 import com.sky.dto.OrdersPageQueryDTO;
 import com.sky.entity.Orders;
 import com.sky.enumeration.OperationType;
@@ -12,6 +13,7 @@ import org.springframework.core.annotation.Order;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 
 @Mapper
 public interface OrderMapper {
@@ -62,4 +64,21 @@ public interface OrderMapper {
     * */
     @Select("select * from orders where status = #{status} and order_time < #{orderTime}")
     List<Orders> getByStatusAndOrderTime(Integer status, LocalDateTime orderTime);
+
+    /*
+    * 动态条件统计营业额
+    * @param map
+    * @return
+    * */
+    Double sumByMap(Map map);
+
+    /*
+    * 根据动态条件统计订单数量
+    * */
+    Integer countByMap(Map map);
+
+    /*
+    * 获取销量榜前十的商品
+    * */
+    List<GoodsSalesDTO> getSalesTop10(LocalDateTime beginTime, LocalDateTime endTime);
 }

@@ -541,3 +541,8 @@ WebSocket应用场景
 使用websocket步骤
 1. 创建websocket服务：实现WebSocketServer类
 2. 配置config：实现WebSocketConfig类
+
+#### 数据统计，图形报表
+
+ApacheECharts前端技术：一个开源的图表库，基于JavaScript开发，兼容所有浏览器，支持PC、移动设备
+官网地址：https://echarts.apache.org/v4/zh/index.html
